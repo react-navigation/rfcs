@@ -136,7 +136,7 @@ Code complexity, difficulty of flow-typing the events properly
 
 # Alternatives
 
-We had discussed an imperative strategy in #51, (componentWillFocus) but there are several drawbacks with that approach, including HOC breakage.
+We had discussed an imperative strategy in [#51](https://github.com/react-navigation/react-navigation/issues/51), (componentWillFocus) but there are several drawbacks with that approach, including HOC breakage.
 
 # Adoption strategy
 
