@@ -148,4 +148,4 @@ We would create an events doc for the main navigation section, and add events th
 
 # Unresolved questions
 
-* How does this proposal help with Android back button _cancellation_? As proposed, this will work to notify a screen when going back, but we need additioanl changes if this were to affect back-button behavior. Lets answer this question in followup proposals.
+* How does this proposal help with Android back button _cancellation_? As proposed, this will work to notify a screen when going back, but we need additional changes if this were to affect back-button behavior. Lets answer this question in followup proposals.
