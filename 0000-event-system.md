@@ -6,7 +6,9 @@
 
 Add an event emitter to the navigation prop that emits focus/blur events for the route.
 
-This proposal has been pioneered by @satya164: https://github.com/react-navigation/react-navigation/issues/1363 https://github.com/react-navigation/react-navigation/issues/51
+This proposal has been pioneered by @satya164: https://github.com/react-navigation/react-navigation/issues/1363
+
+This will resolve longstanding requests for such functionality, as seen here: https://github.com/react-navigation/react-navigation/issues/51
 
 # Basic example
 
@@ -14,13 +16,18 @@ In this example, we focus the first text input when the screen has completed tra
 
 ```
 componentDidMount() {
-  this._sub = this.props.navigation.addEventListener(
+  this._sub = this.props.navigation.addListener(
     'onDidFocus',
     this._focusFirstTextInput
   );
 }
 componentWillUnmount() {
   this._sub.remove();
+  // OR:
+  this.props.navigation.removeListener(
+    'onDidFocus',
+    this._focusFirstTextInput
+  );
 }
 ```
 
@@ -58,11 +65,11 @@ _Refocus_ - On extra tab press, navigate to top of stack, then scroll to top on 
 
 # Detailed design
 
-## Events
+## Event System
 
 An event emitter will be provided as part of each screen navigation prop. The events will be emitted by the navigator as changes happen to the navigation state.
 
-`this.props.navigation.addEventListener` will be a `NavigationEventSubscriber`:
+`this.props.navigation.addListener` will be a `NavigationEventSubscriber`:
 
 ```
 export type NavigationEventSubscriber = (
@@ -73,35 +80,39 @@ export type NavigationEventSubscriber = (
 };
 ```
 
+## Common Event
+
 The following event will be emitted for _every_ navigation prop:
 
 ### onAction(action, newState)
 
-This fires for every action that may affect the navigation state.
+This fires for every action that may affect the navigation state of this particular screen/navigator.
 
 In some cases, the navigation state has not changed and `props.navigation.state === newState`. One example of this is the 'onMaySwipeBack' action fired by the stack navigator.
 
-The following events will be emitted _inside of navigators_. Navigators will implement these additional actions by subscribing to its own onAction event from `props.navigation.addEventListener`.
+## Navigator Events
 
-### onWillFocus
+The following events will available to all screens inside of navigators. Navigators will implement these additional actions by subscribing to its own `onAction` event from `props.navigation.addListener`.
+
+### willFocus
 
 Called when a screen will become focused, after it is mounted. Will be re-called when returning to the screen. Useful for starting to subscribe to new data.
 
 onWillFocus may be called extra times, which is considered 'refocusing', which is most commonly tapping on a tab that is already selected. On iOS this extra focus may result in scroll-to-top behavior.
 
-### onDidFocus
+### didFocus
 
 Called after the transition of focusing the screen. May be useful for input autofocus that waits for the transition to complete before focusing, or any other animation that should happen when the screen finishes becoming active.
 
-### onWillBlur
+### willBlur
 
 The screen will be popping or another screen may become active. At this point screens may unsubscribe from heavy data subscriptions or APIs.
 
-### onDidBlur
+### didBlur
 
 The screen is fully invisible now. This will get called before a screen is unmounted.
 
-## Navigation State
+## "Is Navigating" State
 
 The nav state will be augmented with the `isNavigating` flag to notify subscribers when a navigation animation is happening. The new structure of a navigation state (/route) is:
 
@@ -129,7 +140,7 @@ We had discussed an imperative strategy in #51, (componentWillFocus) but there a
 
 # Adoption strategy
 
-Apps can incrementally opt in to this feature, as this was a missing feature until now.
+Apps can incrementally start utilizing these events, as this was a missing feature until now.
 
 # How we teach this
 
@@ -137,4 +148,4 @@ We would create an events doc for the main navigation section, and add events th
 
 # Unresolved questions
 
-* How does this proposal help with Android back button _cancellation_? As proposed, this will work to notify a screen when going back, but we need additioanl changes if this were to affect back-button behavior.
+* How does this proposal help with Android back button _cancellation_? As proposed, this will work to notify a screen when going back, but we need additioanl changes if this were to affect back-button behavior. Lets answer this question in followup proposals.
