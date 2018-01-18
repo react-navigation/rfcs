@@ -38,10 +38,6 @@ Tabs and cards may need to unmount and re-mount contents when they are focused.
 
 May be useful in conjunction with removeClippedSubviews and utilities like https://github.com/SoftwareMansion/react-native-resource-saving-container
 
-### Back button handling
-
-Screens may want to prevent back actions based on internal state
-
 ### Keyboard dismissal
 
 KB must dismiss when scene _starts_ to transition back (mayBlur)
@@ -54,9 +50,11 @@ Screens may want to re-configure the status bar when the become active or blurre
 
 Inputs want to open the keyboard after the screen finishes transition
 
-### “Refocus”
+### Related Concepts for Future work and exploration:
 
-On extra tab press, navigate to top of stack, then scroll to top on next press
+_Back button handling_ - Screens may want to prevent back actions based on internal state
+
+_Refocus_ - On extra tab press, navigate to top of stack, then scroll to top on next press
 
 # Detailed design
 
@@ -117,9 +115,9 @@ type NavigationState = {
 
 When an animated transition begins, the index/routes change, and isNavigating is toggled to true. If it does not switch to true, the navigation happens immediately without animation.
 
-There will be a new navigation event for navigation completion: 'CompleteNavigation', which toggles the boolean to false.
+There will be a new navigation event for navigation completion: 'CompleteNavigation', which toggles the `isNavigating` boolean to false.
 
-This augmented state and new completion action is useful for navigators to provide focus events on this changing state.
+This augmented state and new completion action is useful for navigators to provide the correct focus/blur events to children.
 
 # Drawbacks
 
