@@ -1,6 +1,6 @@
 * Start Date: 2018-01-16
-* RFC PR: (leave this empty)
-* React Navigation Issue: (leave this empty)
+* RFC PR: https://github.com/react-navigation/rfcs/pull/1
+* React Navigation Issue: https://github.com/react-navigation/react-navigation/issues/1363
 
 # Summary
 
@@ -17,17 +17,12 @@ In this example, we focus the first text input when the screen has completed tra
 ```
 componentDidMount() {
   this._sub = this.props.navigation.addListener(
-    'onDidFocus',
+    'didFocus',
     this._focusFirstTextInput
   );
 }
 componentWillUnmount() {
   this._sub.remove();
-  // OR:
-  this.props.navigation.removeListener(
-    'onDidFocus',
-    this._focusFirstTextInput
-  );
 }
 ```
 
@@ -74,21 +69,31 @@ An event emitter will be provided as part of each screen navigation prop. The ev
 ```
 export type NavigationEventSubscriber = (
   eventName: string,
-  eventHandler: () => void
+  eventHandler: (payload: NavigationEventPayload) => void
 ) => {
   +remove: () => void,
 };
 ```
 
-## Common Event
+## Event Payload
 
-The following event will be emitted for _every_ navigation prop:
+Each event will emit a payload of the same shape, with the following type:
 
-### onAction(action, newState)
+```
+type NavigationEventPayload = {|
+  +state: NavigationState,
+  +lastState: NavigationState,
+  +action: NavigationAction,
+|};
+```
 
-This fires for every action that may affect the navigation state of this particular screen/navigator.
+This shows the previous and current state of the navigation route, and the action that was fired.
 
-In some cases, the navigation state has not changed and `props.navigation.state === newState`. One example of this is the 'onMaySwipeBack' action fired by the stack navigator.
+## Top-Level "action" Event
+
+The "action" event will be emitted for _every_ navigation prop, when an action attempts to change the navigation state. The event only fires for the navigation state of the particular screen/navigator.
+
+In some cases, the navigation state has not changed and `props.navigation.state === newState`. One example of this is the 'maySwipeBack' action fired by the stack navigator, which will be implemented in a following proposal.
 
 ## Navigator Events
 
@@ -110,25 +115,29 @@ The screen will be popping or another screen may become active. At this point sc
 
 ### didBlur
 
-The screen is fully invisible now. This will get called before a screen is unmounted.
+The screen is fully invisible now. This action will NOT fire when a screen is unmounted, for example at the end of a pop transition.
 
-## "Is Navigating" State
+## "Is Transitioning" State
 
-The nav state will be augmented with the `isNavigating` flag to notify subscribers when a navigation animation is happening. The new structure of a navigation state (/route) is:
+The nav state will be augmented with the `isTransitioning` flag to notify subscribers when a navigation animation is happening. The new structure of a navigation state (/route) is:
 
 ```
 type NavigationState = {
   index: number,
   routes: Array<NavigationRoute>,
-  isNavigating: boolean,
+  isTransitioning: boolean,
 };
 ```
 
-When an animated transition begins, the index/routes change, and isNavigating is toggled to true. If it does not switch to true, the navigation happens immediately without animation.
+When an animated transition begins, the index/routes change, and isTransitioning is toggled to true. If it does not switch to true, the navigation happens immediately without animation.
 
-There will be a new navigation event for navigation completion: 'CompleteNavigation', which toggles the `isNavigating` boolean to false.
+There will be a new navigation action for transition completion: 'CompleteTransitionAction', which toggles the `isTransitioning` boolean to false. This is done by StackNavigator, or any navigator once the transition completes.
 
 This augmented state and new completion action is useful for navigators to provide the correct focus/blur events to children.
+
+## Immediate Navigation Actions
+
+The "Navigate" and "Back" actions will automatically set `isTransitioning: true`. To override this behavior and request an immediate transition without animation, you can provide a new `immediate: true` option to the navigate and back actions, and the action will leave `isTransitioning` as false.
 
 # Drawbacks
 
@@ -148,4 +157,4 @@ We would create an events doc for the main navigation section, and add events th
 
 # Unresolved questions
 
-* How does this proposal help with Android back button _cancellation_? As proposed, this will work to notify a screen when going back, but we need additional changes if this were to affect back-button behavior. Lets answer this question in followup proposals.
+* Does this proposal help with Android back button _cancellation_? As proposed, this will work to notify a screen when going back, but we need additional changes if this were to affect back-button behavior. Lets answer this question in followup proposals.
