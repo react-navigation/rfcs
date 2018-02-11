@@ -8,11 +8,15 @@ The `screenProps` prop allows the user to pass a prop to a navigator's children 
 
 # Use case
 
-I initially added this prop to be able to pass some data to the child screens in a navigator from the parent. People are also using it to pass all kinds of stuff, such as global state, functions, reference to `this` etc.
+I initially added this prop to be able to pass some data to the child screens in a navigator from the parent. There are several other ways people are using this:
+
+1. State management, to pass state from root to some screen down the tree
+2. Reference to parent component instance, methods etc.
 
 # Problems
 
-Apart from the misuse, it's too easy to de-optimize the whole tree with `screenProps`. For example, `screenProps={{ foo: 'bar' }}` creates a new object every render, which breaks `shouldComponentUpdate` in all children navigators and screens, no matter how deep the tree is, and will re-render everything for a simple change. And actually most of the usage I have seen in the bug reports use it this way. It can also cause issues like this https://github.com/react-navigation/react-navigation/issues/2625
+1. People misuse this as a way to solve state-management issues, which is not something a navigation library needs to solve
+2. Apart from the misuse, it's too easy to de-optimize the whole tree with `screenProps`. For example, `screenProps={{ foo: 'bar' }}` creates a new object every render, which breaks `shouldComponentUpdate` in all children navigators and screens, no matter how deep the tree is, and will re-render everything for a simple change. And actually most of the usage I have seen in the bug reports use it this way. It can also cause issues like this https://github.com/react-navigation/react-navigation/issues/2625
 
 Even if we can document to avoid the re-render issue, this prop was present due to lack of other ways to achieve the same functionality. Now that React's context API is finally going to be stable, it's no longer the case.
 
