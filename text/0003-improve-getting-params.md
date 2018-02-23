@@ -1,6 +1,4 @@
-- Start Date: (fill me in with today's date, 2018-02-12)
-- RFC PR: (leave this empty)
-- React Navigation Issue: (leave this empty)
+- RFC PR: https://github.com/react-navigation/react-navigation/pull/3510
 
 # Summary
 
