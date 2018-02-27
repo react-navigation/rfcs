@@ -8,6 +8,8 @@ This RFC suggests making the `navigate` action for `StackRouter` focus the given
 
 In other words, this proposed change is the same as how `StackRouter` behaves if you specify a `key` to the `navigate` action but without requiring that the user specify a `key` to take advantage of the behavior. If no `key` is provided, `StackRouter` assumes the user just wants to either jump to the route by the given name if it exists in state already or push it if not.
 
+In addition to this change, `push` and other `StackRouter` related navigation helpers will be changed from non-bubbling & specific to the deepest `StackRouter` to be global in the same way that `navigate` is -- when you push the new route it can be handled by any `StackRouter` in the state tree. The reason for this is that there is now a clear use case for why this matters. Take for example the flow of navigating from a user profile -> comment -> user profile. It is conceivable that you may visit user profile for "Jane", then in a comment visit the profile for "Bob", then in a comment visit "Jane" again. In this situation it is expected that the second time you visit "Jane" it pushes a new profile screen on top, rather than jumping back to the first one. For these situations, users should use `push`.
+
 # Basic example
 
 In the "Moving between screens" section of the documentation, we have the following example:
@@ -89,6 +91,7 @@ We need to change [this branch](https://github.com/react-navigation/react-naviga
 # Drawbacks
 
 - This is a significant breaking change. `navigate`, until the recent introduction of specific helpers/actions like `push` for `StackRouter`, has been the primary way to move between the app.
+- A small breaking change to make `StackRouter` actions `push`, `pop`, `popToTop`, and `replace` bubble in the same way that `navigate` does. This will likely have a minimal impact if we move on this change soon, as we just introduced these actions. In the worst case, users will have some action be performed when they expected a noop (and probably should not have called it in the first place) and it should not be difficult to fix.
 
 # Alternatives
 
