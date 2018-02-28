@@ -1,5 +1,5 @@
 - Start Date: 2018-02-23
-- RFC PR: (leave this empty)
+- RFC PR: https://github.com/react-navigation/rfcs/pull/18
 - React Navigation Issue: (leave this empty)
 
 # Summary
