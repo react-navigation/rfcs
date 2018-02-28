@@ -95,3 +95,15 @@ handleBack() {
 ```
 
 **Used by:** Instagram
+
+# Proposal
+
+It makes sense to implement the following behaviours:
+
+```js
+type backBehaviour =
+  | 'none' // don't handle the back button
+  | 'history' // go back to previous route in history (with dedupe)
+  | 'order' // go back to the tab with previous index (corressponds to the `order` config option)
+  | 'initialRoute' // go back to the intial route
+```
