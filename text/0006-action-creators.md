@@ -1,6 +1,6 @@
 - Start Date: 2018-02-09
-- RFC PR: (leave this empty)
-- React Navigation Issue: (leave this empty)
+- RFC PR: https://github.com/react-navigation/rfcs/pull/18
+- React Navigation Issue: https://github.com/react-navigation/react-navigation/pull/3619
 
 # Modular Actions Creators
 
