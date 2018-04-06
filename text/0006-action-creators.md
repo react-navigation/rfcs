@@ -20,11 +20,11 @@ this.props.navigation.openDrawer();
 
 ## Detailed design
 
-We will add a new function on the router, called "getActionsForRoute", which will return action creators. For example, in the StackRouter:
+We will add a new function on the router, called "getActionCreators", which will return action creators. For example, in the StackRouter:
 
 ```
 const stackRouter = {
-    getActionsForRoute: route => ({
+    getActionCreators: route => ({
         popToTop: () => ({ type: 'PopToTop' }),
         setParams: (params) => ({ type: 'SetParams', key: route.key, params }),
         ...
@@ -54,10 +54,23 @@ this.props.navigation.jumpTo();
 
 This allows us to have the convenience of `addNavigationHelpers`, but each router can provide contextual helpers.
 
+### Custom action support
+
+Each router will support a new param, `getCustomActionCreators(route, navStateKey)`, which allows the user to provide additional action creators that will become helpers on the navigation prop.
+
+```
+const AppNavigator = createStackNavigator({...routeConfigs}, {
+  getCustomActionCreators: (route, navStateKey) => ({
+    goHome: () => NavigationActions.navigate('Home'),
+  }),
+});
+```
+
+Now, you will be able to call `props.navigation.goHome` within this navigator.
 
 ## Action Creator Definitions
 
-Now is a good time to revisit the helpers that we have available, and what arguments they should.
+Now is a good time to revisit the helpers that we have available, and what arguments they should support.
 
 ### Stack Router
     - Navigate
