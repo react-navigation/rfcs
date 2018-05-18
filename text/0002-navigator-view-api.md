@@ -56,7 +56,7 @@ In this example, navigationConfig is an object that will be passed as a prop to 
 
 Importantly, the navigation view no longer receives a router prop. Instead, it gets `descriptors`. Routers are no longer aware of the navigation options that a view may need, meaning that custom navigators are much easier to implement and understand.
 
-This change will ensure that `addNavigationHelpers` happens automatically for each child navigation prop, and the view will no longer be responsible for it. This is not desirable because different navigatators may wish to expose different helpers. As a followup to this RFC, the helpers could be moved off of the navigation prop, which may reduce boilerplate and remove the need for `addNavigationHelpers`.
+This change will ensure that `addNavigationHelpers` happens automatically for each child navigation prop, and the view will no longer be responsible for it. This is not desirable because different navigators may wish to expose different helpers. As a followup to this RFC, the helpers could be moved off of the navigation prop, which may reduce boilerplate and remove the need for `addNavigationHelpers`.
 
 For more details, [see the experimental implementation here.](https://github.com/react-navigation/react-navigation/pull/3392)
 
