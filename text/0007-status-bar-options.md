@@ -8,7 +8,7 @@ The configuration of status bars is mostly dependent on the screen, so it maps w
 
 # Basic example
 
-```
+```js
 class MyScreen extends React.Component {
   static navigationOptions = {
      // default to 'default', possible values: 'default', 'dark-content', 'light-content'
@@ -31,6 +31,18 @@ It improves library ergonomics and is highly requested ([1](https://react-naviga
 # Detailed design
 
 The status bar configuration for deepest active route will always be applied on navigation state change. We will use the imperative `StatusBar` API, in particular `StatusBar.setBarStyle` and `StatusBar.setHidden`. We are intentionally leaving out `translucent` and `backgroundColor` options for the Android status bar because they are much less commonly used and the expected semantics aren't as straightforward.
+
+In order to remain entirely backwards compatible, these options will only be available if the user opts-in using a prop on the root navigator -- similar to the [enableURLHandling prop](https://github.com/react-navigation/react-navigation/blob/9d77fd6d544ac498de2fe65a8601df2e181b8ba9/src/createNavigationContainer.js#L133).
+
+```js
+render() {
+  return (
+    <RootNavigator
+      enableURLHandling={false /* default is true */}
+      enableStatusBarOptions={true /* default is false */}
+  )
+}
+```
 
 # Drawbacks
 
