@@ -1,5 +1,5 @@
-- Start Date: (fill me in with today's date, YYYY-MM-DD)
-- RFC PR: (leave this empty)
+- Start Date: 2018-08-30
+- RFC PR: https://github.com/react-navigation/rfcs/pull/59
 - React Navigation Issue: (leave this empty)
 
 # Summary
