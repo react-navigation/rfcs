@@ -64,7 +64,7 @@ The only drawback is the increased boilerplate. Most apps will need to add two l
 
 # Alternatives
 
-We could explore a fully-implicit container design that works on multiple platforms, but it may break badly in some fringe environments like server rendering or browfield apps.
+We could explore a fully-implicit container design that works on multiple platforms, but it may break badly in some fringe environments like server rendering or brownfield apps.
 
 # Adoption strategy
 
